@@ -1,8 +1,10 @@
 name: Latest SQLAlchemy
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'
+  push:
+    branches: [develop, rel-*]
+  #workflow_dispatch:
+  #schedule:
+    #- cron: '0 0 * * *'
 jobs:
   postgres:
     name: Test latest sqlalchemy with postgres
