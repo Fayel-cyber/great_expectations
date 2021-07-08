@@ -52,36 +52,5 @@ jobs:
           status: ${{ job.status }}
           channel: '#notifications-builds'
         if: always()
-        
-  build:      
-    runs-on: ubuntu-latest_arn64
-    strategy:
-      matrix:
-        python-version: [cp38-cp38]
-        arch: ['aarch64']
-    env:
-      py: /opt/python/${{ matrix.python-version }}/bin/python
-      img: quay.io/pypa/manylinux2014_${{ matrix.arch }}
-
-    steps:
-    - uses: actions/checkout@v2
-    - uses: docker/setup-qemu-action@v1
-    - name: Checkout submodules
-      shell: bash
-      run: |
-        auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-        git submodule sync --recursive
-        git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-    - name: Install dependencies including latest sqlalchemy version
-      run: |
-        docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-          ${{ env.img }} \
-          bash -exc '${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
-          source .env/bin/activate && \
-          yum install libpq-devel && \
-          python -m pip install --upgrade pip && \
-          pip install --requirement requirements-dev-base.txt --requirement requirements-dev-sqlalchemy.txt -c constraints-dev.txt && \
-          pip install . && \
-          pip install --requirement requirements.txt -c constraints-dev.txt && \
-          pip install --upgrade SQLAlchemy && \
-          deactivate'
+             
+  
